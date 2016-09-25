@@ -9,13 +9,17 @@ class QuotesSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
-        for quote in response.css('article.list_item.div'):
+        
+        for talk in response.css('article.list_item'):
+            raw_title = talk.css("div").css("a::attr(title)").extract()[0]
+            title = raw_title.lstrip("Permalink to ")
             yield {
-                'text': quote.css('span.text::text').extract_first(),
-                'author': quote.xpath('span/small/text()').extract_first(),
+                "title": title,
+                "authors": talk.css("footer").css("address").css("a::text").extract()
             }
-
+        """
         next_page = response.css('li.next a::attr("href")').extract_first()
         if next_page is not None:
             next_page = response.urljoin(next_page)
             yield scrapy.Request(next_page, callback=self.parse)
+        """
