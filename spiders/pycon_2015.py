@@ -17,5 +17,12 @@ class pycon_2015_Spider(scrapy.Spider):
             return response.css(query).extract_first().strip()
 
         yield {
-            'name': extract_with_css('.box-content>h2::text'),
+            'title': extract_with_css('.box-content>h2::text'),
+            'author': extract_with_css('.box-content>h4>a::text'),
+            'description': extract_with_css('.description>a::text'),
+            'abstract': extract_with_css('.abstract>::text'),
+            'audience_level': extract_with_css(
+                '.dl-horizontal > dd:nth-child(2)::text'),
+            'category': extract_with_css(
+                '.dl-horizontal > dd:nth-child(4)::text'),
         }
